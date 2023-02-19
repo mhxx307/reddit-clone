@@ -64,6 +64,7 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     " Queries for type 'post' "
     getPost(post_id: ID!): post
         @dbquery(
@@ -74,6 +75,7 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     getPostUsingComment_post_id_fkey(post_id: ID!): post
         @dbquery(
             type: "postgresql"
@@ -83,6 +85,7 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     getPostUsingPost_subreddit_id_fkey(id: ID!): [post]
         @dbquery(
             type: "postgresql"
@@ -92,9 +95,12 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     post(id: ID!): post
         @dbquery(type: "postgresql", schema: "public", table: "post", configuration: "postgresql_config")
+
     postList: [post] @dbquery(type: "postgresql", schema: "public", table: "post", configuration: "postgresql_config")
+
     postPaginatedList(first: Int, after: Int): [post]
         @dbquery(
             type: "postgresql"
@@ -104,6 +110,7 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     " Queries for type 'subreddit' "
     getSubreddit(subreddit_id: ID!): subreddit
         @dbquery(
@@ -114,10 +121,23 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
+    getSubredditByTopic(topic: String!): subreddit
+        @dbquery(
+            type: "postgresql"
+            schema: "public"
+            query: """
+            SELECT * FROM "subreddit" WHERE "topic" = $1
+            """
+            configuration: "postgresql_config"
+        )
+
     subreddit(id: ID!): subreddit
         @dbquery(type: "postgresql", schema: "public", table: "subreddit", configuration: "postgresql_config")
+
     subredditList: [subreddit]
         @dbquery(type: "postgresql", schema: "public", table: "subreddit", configuration: "postgresql_config")
+
     subredditPaginatedList(first: Int, after: Int): [subreddit]
         @dbquery(
             type: "postgresql"
@@ -127,6 +147,7 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     " Queries for type 'vote' "
     getVote(id: ID!): [vote]
         @dbquery(
@@ -165,6 +186,7 @@ type Mutation {
             dml: DELETE
             configuration: "postgresql_config"
         )
+
     insertComment(username: String, post_id: ID, text: String): comment
         @dbquery(
             type: "postgresql"
@@ -173,6 +195,7 @@ type Mutation {
             dml: INSERT
             configuration: "postgresql_config"
         )
+
     updateComment(id: ID!, created_at: DateTime, post_id: ID, text: String, username: String): comment
         @dbquery(
             type: "postgresql"
@@ -189,11 +212,14 @@ type Mutation {
             """
             configuration: "postgresql_config"
         )
+
     " Mutations for type 'post' "
     deletePost(id: ID!): post
         @dbquery(type: "postgresql", schema: "public", table: "post", dml: DELETE, configuration: "postgresql_config")
+
     insertPost(body: String, subreddit_id: ID, title: String, username: String, image: String): post
         @dbquery(type: "postgresql", schema: "public", table: "post", dml: INSERT, configuration: "postgresql_config")
+
     updatePost(
         id: ID!
         body: String
@@ -220,6 +246,7 @@ type Mutation {
             """
             configuration: "postgresql_config"
         )
+
     " Mutations for type 'subreddit' "
     deleteSubreddit(id: ID!): subreddit
         @dbquery(
@@ -229,6 +256,7 @@ type Mutation {
             dml: DELETE
             configuration: "postgresql_config"
         )
+
     insertSubreddit(topic: String): subreddit
         @dbquery(
             type: "postgresql"
@@ -237,6 +265,7 @@ type Mutation {
             dml: INSERT
             configuration: "postgresql_config"
         )
+
     updateSubreddit(id: ID!, created_at: DateTime, topic: String): subreddit
         @dbquery(
             type: "postgresql"
@@ -251,6 +280,7 @@ type Mutation {
             """
             configuration: "postgresql_config"
         )
+
     " Mutations for type 'vote' "
     deleteVote(id: ID!): vote
         @dbquery(type: "postgresql", schema: "public", table: "vote", dml: DELETE, configuration: "postgresql_config")

@@ -5,6 +5,11 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useMutation } from "@apollo/client";
+import { ADD_POST, ADD_SUBREDDIT } from "graphql/mutations";
+import client from "libs/apollo-client";
+import { GET_SUBREDDIT_BY_TOPIC } from "graphql/queries";
+import { toast } from "react-toastify";
 
 interface PostData {
     title: string;
@@ -23,18 +28,109 @@ const schema = yup
 function PostBox() {
     const { data: session } = useSession();
     const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
+    const [addPost] = useMutation(ADD_POST);
+    const [addSubreddit] = useMutation(ADD_SUBREDDIT);
 
     const { register, setValue, handleSubmit, watch, control } = useForm<PostData>({
         resolver: yupResolver(schema),
         mode: "onSubmit",
+        defaultValues: {
+            title: "",
+            body: "",
+            subreddit: "",
+            imageURL: "",
+        },
     });
 
     const handleCreatePost = async (payload: PostData) => {
-        console.log(payload);
+        console.log("payload", payload);
+        const notification = toast.loading("Creating a post...", { toastId: "post-loading" });
+
+        try {
+            // Query for the subreddit topic
+            const {
+                data: { getSubredditByTopic },
+            } = await client.query({
+                query: GET_SUBREDDIT_BY_TOPIC,
+                variables: { topic: payload.subreddit },
+            });
+
+            if (!getSubredditByTopic) {
+                // create the subreddit
+                console.log("subreddit is new! => creating a subreddit!");
+
+                const {
+                    data: { insertSubreddit: newSubreddit },
+                } = await addSubreddit({
+                    variables: {
+                        topic: payload.subreddit,
+                    },
+                });
+
+                console.log("creating a post...", payload);
+                const image = payload.imageURL || "";
+
+                const {
+                    data: { insertPost: newPost },
+                } = await addPost({
+                    variables: {
+                        title: payload.title,
+                        body: payload.body,
+                        subreddit_id: newSubreddit.id,
+                        imageURL: image,
+                        username: session?.user?.name,
+                    },
+                });
+
+                console.log("New post created!", newPost);
+            } else {
+                // use existing subreddit...
+                console.log("Subreddit already exist! => using existing subreddit...");
+                console.log("Subreddit list:", getSubredditByTopic);
+                const image = payload.imageURL || "";
+
+                const {
+                    data: { insertPost: newPost },
+                } = await addPost({
+                    variables: {
+                        title: payload.title,
+                        body: payload.body,
+                        subreddit_id: getSubredditByTopic.id,
+                        imageURL: image,
+                        username: session?.user?.name,
+                    },
+                });
+
+                console.log("New post created!", newPost);
+            }
+
+            // after creating a post, reset the form
+            setValue("title", "");
+            setValue("body", "");
+            setValue("subreddit", "");
+            setValue("imageURL", "");
+
+            setImageBoxOpen(false);
+            toast.update(notification, {
+                render: "New post created!",
+                type: "success",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        } catch (error) {
+            console.log("error", error);
+            toast.update(notification, {
+                render: "Whoops something is wrong!!",
+                type: "error",
+                isLoading: false,
+                autoClose: 3000,
+            });
+        }
     };
 
     return (
         <form
+            method="POST"
             className="sticky top-16 z-50 rounded-md border border-gray-300 bg-white p-2"
             onSubmit={handleSubmit(handleCreatePost)}
         >
@@ -47,7 +143,6 @@ function PostBox() {
                     disabled={!session}
                     type="text"
                     placeholder={session ? "Create a post to entering a tittle" : "Sign in to post"}
-                    className="flex-1 rounded-md bg-gray-50 p-2 pl-5 outline-none"
                 />
 
                 <PhotoIcon
@@ -63,9 +158,9 @@ function PostBox() {
                     <div className="flex items-center px-2">
                         <p className="min-w-[90px]">body:</p>
                         <InputField
+                            isTextArea
                             name="body"
                             control={control}
-                            className="m-2 flex-1 bg-blue-50 p-2 outline-none"
                             type="text"
                             placeholder="Text (Optional)"
                         />
@@ -76,7 +171,6 @@ function PostBox() {
                         <InputField
                             name="subreddit"
                             control={control}
-                            className="m-2 flex-1 bg-blue-50 p-2 outline-none"
                             type="text"
                             placeholder="i.e. programming, reactjs, etc."
                         />
@@ -85,13 +179,7 @@ function PostBox() {
                     {imageBoxOpen && (
                         <div className="flex items-center px-2">
                             <p className="min-w-[90px]">Image URL:</p>
-                            <InputField
-                                name="imageURL"
-                                control={control}
-                                className="m-2 flex-1 bg-blue-50 p-2 outline-none"
-                                type="text"
-                                placeholder="Optional..."
-                            />
+                            <InputField name="imageURL" control={control} type="text" placeholder="Optional..." />
                         </div>
                     )}
 
