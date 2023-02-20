@@ -36,7 +36,7 @@ function Feed({ topic }: FeedProps) {
     return (
         <div className="mt-5 space-y-4 w-full">
             {posts?.map((post) => (
-                <Link href={`post/${post.id}`} className="block" key={post.id}>
+                <Link href={`post/${post.id}`} className="block" key={post.id} passHref legacyBehavior>
                     <Post post={post} />
                 </Link>
             ))}
