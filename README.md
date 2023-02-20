@@ -1,27 +1,64 @@
-# Next.js + Tailwind CSS Example
+# REDDIT CLONE 2.0
 
-This example shows how to use [Tailwind CSS](https://tailwindcss.com/) [(v3.2)](https://tailwindcss.com/blog/tailwindcss-v3-2) with Next.js. It follows the steps outlined in the official [Tailwind docs](https://tailwindcss.com/docs/guides/nextjs).
+This project is a web application using Next.js, Apollo Client, React Hook Form, React Timeago, React Toastify, and other technologies.
 
-## Deploy your own
+## Getting Started
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-tailwindcss)
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/next.js/tree/canary/examples/with-tailwindcss&project-name=with-tailwindcss&repository-name=with-tailwindcss)
+### Prerequisites
 
-## How to use
+What things you need to install the software and how to install them:
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
+-   Node.js
+-   npm
 
-```bash
-npx create-next-app --example with-tailwindcss with-tailwindcss-app
-```
+### Installing
 
-```bash
-yarn create next-app --example with-tailwindcss with-tailwindcss-app
-```
+Clone the repository:
 
-```bash
-pnpm create next-app --example with-tailwindcss with-tailwindcss-app
-```
+    git clone https://github.com/username/repository-name.git
 
-Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+Install dependencies:
+
+    npm install
+
+Start development server:
+
+    npm run dev
+
+Build for production:
+
+    npm run build
+
+Start production server:
+
+    npm start
+
+Create supabase project:... (Updating)
+
+remove suffix in .env.example file & pass key into this file
+
+## Built With
+
+-   [Next.js](https://nextjs.org/) - The web framework used
+-   [Apollo Client](https://www.apollographql.com/docs/react/) - GraphQL client library used for data fetching and managing local state in React applications
+-   [React Hook Form](https://react-hook-form.com/) - Used for form validation and submission
+-   [React Timeago](https://github.com/nmn/react-timeago) - Used to display relative timestamps
+-   [React Toastify](https://fkhadra.github.io/react-toastify/) - Used to display notifications in the application
+-   [Supabase] + [Stepzen] - Supabase to store data and provide rest api and Stepzen to provide graphql api.
+-   [NextAuth] - are services used to provide authentication and authorization features in the application
+
+## Contributing
+
+...
+
+## Versioning
+
+...
+
+## Authors
+
+-   La Vo Minh Quan - mhxx307
+
+## Thanks to sonny sangha
