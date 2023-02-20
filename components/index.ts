@@ -5,3 +5,5 @@ export { default as InputField } from "./InputField";
 export { default as Feed } from "./Feed";
 export { default as Post } from "./Post";
 export { default as SubredditRow } from "./SubredditRow";
+export { default as ConversationList } from "./ConversationList";
+export { default as Auth } from "./Auth";

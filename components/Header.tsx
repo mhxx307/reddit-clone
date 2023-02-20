@@ -49,7 +49,9 @@ function Header() {
                 <GlobeAltIcon className="icon" />
                 <VideoCameraIcon className="icon" />
                 <hr className="h-10 border border-gray-100" />
-                <ChatBubbleLeftIcon className="icon" />
+                <Link href="/chat">
+                    <ChatBubbleLeftIcon className="icon" />
+                </Link>
                 <BellIcon className="icon" />
                 <PlusIcon className="icon" />
                 <SpeakerWaveIcon className="icon" />

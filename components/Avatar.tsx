@@ -16,7 +16,13 @@ function Avatar({ seed, large }: AvatarProps) {
         >
             <Image
                 layout="fill"
-                src={`https://api.dicebear.com/5.x/open-peeps/png?seed=${seed || session?.user?.name || "placeholder"}`}
+                src={
+                    session?.user?.image
+                        ? session?.user?.image
+                        : `https://api.dicebear.com/5.x/open-peeps/png?seed=${
+                              seed || session?.user?.name || "placeholder"
+                          }`
+                }
                 alt="avatar"
                 className="object-cover flex-shrink-0"
             />

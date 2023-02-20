@@ -16,7 +16,7 @@ const Home: NextPage = () => {
     return (
         <div className="max-w-5xl my-7 mx-auto">
             <Head>
-                <title>Credit clone</title>
+                <title>Teddy - Credit clone</title>
                 <link rel="stylesheet" href="/favicon.ico" />
             </Head>
 
