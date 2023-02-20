@@ -9,3 +9,33 @@ export const GET_SUBREDDIT_BY_TOPIC = gql`
         }
     }
 `;
+
+export const GET_POSTS = gql`
+    query MyQuery {
+        postList {
+            id
+            image
+            title
+            username
+            created_at
+            body
+            votes {
+                id
+                created_at
+                username
+                vote
+            }
+            subreddit {
+                topic
+                created_at
+                id
+            }
+            comments {
+                created_at
+                id
+                text
+                username
+            }
+        }
+    }
+`;

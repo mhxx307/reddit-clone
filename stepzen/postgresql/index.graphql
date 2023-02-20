@@ -8,7 +8,7 @@ type comment {
 }
 
 type post {
-    vote: [vote] @materializer(query: "getVote")
+    votes: [vote] @materializer(query: "getVotesByPostId", arguments: [{ name: "post_id", field: "id" }])
     username: String
     title: String
     subreddit_id: ID
@@ -16,7 +16,7 @@ type post {
     image: String
     id: ID!
     created_at: DateTime
-    comment: [comment] @materializer(query: "getComment")
+    comments: [comment] @materializer(query: "getCommentsByPostId", arguments: [{ name: "post_id", field: "id" }])
     body: String
 }
 
@@ -44,8 +44,10 @@ type Query {
     " Queries for type 'comment' "
     comment(id: ID!): comment
         @dbquery(type: "postgresql", schema: "public", table: "comment", configuration: "postgresql_config")
+
     commentList: [comment]
         @dbquery(type: "postgresql", schema: "public", table: "comment", configuration: "postgresql_config")
+
     commentPaginatedList(first: Int, after: Int): [comment]
         @dbquery(
             type: "postgresql"
@@ -55,6 +57,7 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     getComment(id: ID!): [comment]
         @dbquery(
             type: "postgresql"
@@ -99,7 +102,14 @@ type Query {
     post(id: ID!): post
         @dbquery(type: "postgresql", schema: "public", table: "post", configuration: "postgresql_config")
 
-    postList: [post] @dbquery(type: "postgresql", schema: "public", table: "post", configuration: "postgresql_config")
+    postList: [post]
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT * FROM "post" ORDER BY "post"."created_at" DESC
+            """
+            configuration: "postgresql_config"
+        )
 
     postPaginatedList(first: Int, after: Int): [post]
         @dbquery(
@@ -158,15 +168,36 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
     vote(id: ID!): vote
         @dbquery(type: "postgresql", schema: "public", table: "vote", configuration: "postgresql_config")
+
     voteList: [vote] @dbquery(type: "postgresql", schema: "public", table: "vote", configuration: "postgresql_config")
+
     votePaginatedList(first: Int, after: Int): [vote]
         @dbquery(
             type: "postgresql"
             schema: "public"
             query: """
             SELECT "created_at", "id", "post_id", "username", "vote" FROM "vote" ORDER BY "id" LIMIT $1 OFFSET $2
+            """
+            configuration: "postgresql_config"
+        )
+
+    getVotesByPostId(post_id: ID!): [vote]
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT * FROM "vote" WHERE "post_id" = $1 ORDER BY "created_at" DESC
+            """
+            configuration: "postgresql_config"
+        )
+
+    getCommentsByPostId(post_id: ID!): [comment]
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT * FROM "comment" WHERE "post_id" = $1 ORDER BY "created_at" DESC
             """
             configuration: "postgresql_config"
         )

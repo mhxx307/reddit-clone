@@ -8,7 +8,7 @@ import * as yup from "yup";
 import { useMutation } from "@apollo/client";
 import { ADD_POST, ADD_SUBREDDIT } from "graphql/mutations";
 import client from "libs/apollo-client";
-import { GET_SUBREDDIT_BY_TOPIC } from "graphql/queries";
+import { GET_POSTS, GET_SUBREDDIT_BY_TOPIC } from "graphql/queries";
 import { toast } from "react-toastify";
 
 interface PostData {
@@ -28,7 +28,9 @@ const schema = yup
 function PostBox() {
     const { data: session } = useSession();
     const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
-    const [addPost] = useMutation(ADD_POST);
+    const [addPost] = useMutation(ADD_POST, {
+        refetchQueries: [GET_POSTS, "postList"],
+    });
     const [addSubreddit] = useMutation(ADD_SUBREDDIT);
 
     const { register, setValue, handleSubmit, watch, control } = useForm<PostData>({
