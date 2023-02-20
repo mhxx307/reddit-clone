@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { Spin as Hamburger } from "hamburger-react";
 import { useState } from "react";
-import { signIn, useSession, signOut } from "next-auth/react";
+import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
 
 function Header() {
@@ -69,7 +69,7 @@ function Header() {
                     </div>
                     <div className="flex-1 text-xs">
                         <p className="truncate">{session?.user?.name}</p>
-                        <p className="text-gray-400">Sign out</p>
+                        <p className="text-gray-400">Logout</p>
                     </div>
 
                     <ChevronDownIcon className="h-5 flex-shrink-0 text-gray-400" />
@@ -82,7 +82,7 @@ function Header() {
                     <div className="relative h-5 w-5 flex-shrink-0">
                         <Image src="/reddit.png" alt="sign" layout="fill" className="object-contain" />
                     </div>
-                    <p className="text-gray-400">Sign in</p>
+                    <p className="text-gray-400">Login</p>
                 </div>
             )}
         </div>
