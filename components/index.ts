@@ -4,3 +4,4 @@ export { default as Avatar } from "./Avatar";
 export { default as InputField } from "./InputField";
 export { default as Feed } from "./Feed";
 export { default as Post } from "./Post";
+export { default as SubredditRow } from "./SubredditRow";

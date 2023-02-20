@@ -10,19 +10,86 @@ import {
 import Avatar from "./Avatar";
 import TimeAgo from "react-timeago";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_VOTES_BY_POST_ID } from "graphql/queries";
+import { ADD_VOTE } from "graphql/mutations";
 
 interface PostProps {
     post: Post;
 }
 
 function Post({ post }: PostProps) {
+    const [vote, setVote] = useState<boolean>();
+    const { data: session } = useSession();
+
+    const { data, loading } = useQuery(GET_VOTES_BY_POST_ID, {
+        variables: { post_id: post.id },
+    });
+
+    const [addVote] = useMutation(ADD_VOTE, {
+        refetchQueries: [GET_VOTES_BY_POST_ID, "getVotesByPostId"],
+    });
+
+    const upVote = async (isUpvote: boolean) => {
+        if (!session) {
+            toast.error("You must be logged in to vote!");
+            return;
+        }
+
+        if (vote && isUpvote) return;
+
+        if (vote === false && !isUpvote) return;
+
+        await addVote({
+            variables: {
+                post_id: post.id,
+                username: session.user?.name,
+                vote: isUpvote,
+            },
+        });
+    };
+
+    useEffect(() => {
+        const votes: Vote[] = data?.getVotesByPostId;
+
+        // lates vote (as we sorted by newly created first in the SQL query)
+        // we can improve this by sorting by moving it to the original query
+        const vote = votes?.find((vote) => vote.username === session?.user?.name)?.vote;
+
+        setVote(vote);
+    }, [data]);
+
+    const displayVotes = (data: any) => {
+        const votes: Vote[] = data?.getVotesByPostId;
+        const displayNumber = votes?.reduce((total, vote) => {
+            return vote.vote ? (total += 1) : (total -= 1);
+        }, 0);
+
+        if (votes?.length === 0) return 0;
+
+        if (displayNumber === 0) {
+            return votes[0]?.vote ? 1 : -1;
+        }
+
+        return displayNumber;
+    };
+
     return (
         <div className="flex w-full cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border-gray-600">
             {/* votes */}
             <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
-                <ArrowUpIcon className="voteButton hover:text-red-400" />
-                <p className="text-black font-bold text-xs">0</p>
-                <ArrowDownIcon className="voteButton hover:text-blue-400" />
+                <ArrowUpIcon
+                    onClick={() => upVote(true)}
+                    className={`voteButton hover:text-red-400 ${vote && "text-red-400 "}`}
+                />
+                <p className="text-black font-bold text-xs">{displayVotes(data)}</p>
+                <ArrowDownIcon
+                    onClick={() => upVote(false)}
+                    className={`voteButton hover:text-blue-400 ${vote === false && "text-blue-400"}`}
+                />
             </div>
 
             {/* section */}

@@ -99,3 +99,25 @@ export const GET_POST_BY_ID = gql`
         }
     }
 `;
+
+export const GET_VOTES_BY_POST_ID = gql`
+    query MyQuery($post_id: ID!) {
+        getVotesByPostId(post_id: $post_id) {
+            id
+            created_at
+            username
+            vote
+            post_id
+        }
+    }
+`;
+
+export const SUBREDDIT_PAGINATED_LIST = gql`
+    query MyQuery($first: Int, $after: Int) {
+        subredditPaginatedList(first: $first, after: $after) {
+            created_at
+            id
+            topic
+        }
+    }
+`;
