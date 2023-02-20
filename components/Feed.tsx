@@ -2,6 +2,7 @@ import { GET_POSTS, GET_POSTS_BY_TOPIC } from "graphql/queries";
 import { useQuery } from "@apollo/client";
 import Post from "./Post";
 import { PostSkeleton } from "./skeletons";
+import Link from "next/link";
 
 interface FeedProps {
     topic?: string;
@@ -35,7 +36,9 @@ function Feed({ topic }: FeedProps) {
     return (
         <div className="mt-5 space-y-4 w-full">
             {posts?.map((post) => (
-                <Post key={post.id} post={post} />
+                <Link href={`post/${post.id}`} className="block">
+                    <Post key={post.id} post={post} />
+                </Link>
             ))}
         </div>
     );

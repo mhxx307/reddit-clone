@@ -1,12 +1,3 @@
-type Comment = {
-    username: string;
-    text: string;
-    post_id: number;
-    post: Post;
-    id: string;
-    created_at: string;
-};
-
 type Post = {
     username: string;
     title: string;
@@ -16,8 +7,15 @@ type Post = {
     created_at: string;
     body: string;
     subreddit: Subreddit;
-    comments: Comment[];
+    comments: PostComment[];
     votes: Vote[];
+};
+
+type PostComment = {
+    id: string;
+    username: string;
+    text: string;
+    created_at: string;
 };
 
 type Subreddit = {
@@ -30,8 +28,6 @@ type Subreddit = {
 type Vote = {
     vote: boolean;
     username: string;
-    post_id: string;
-    post: Post;
     id: string;
     created_at: string;
 };
