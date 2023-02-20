@@ -3,12 +3,14 @@ import { useQuery } from "@apollo/client";
 import Post from "./Post";
 import { PostSkeleton } from "./skeletons";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface FeedProps {
     topic?: string;
 }
 
 function Feed({ topic }: FeedProps) {
+    const router = useRouter();
     const { data, error, loading } = !topic
         ? useQuery(GET_POSTS)
         : useQuery(GET_POSTS_BY_TOPIC, {
@@ -36,9 +38,9 @@ function Feed({ topic }: FeedProps) {
     return (
         <div className="mt-5 space-y-4 w-full">
             {posts?.map((post) => (
-                <Link href={`post/${post.id}`} className="block" key={post.id} passHref legacyBehavior>
+                <div className="block" key={post.id} onClick={() => router.push(`post/${post.id}`)}>
                     <Post post={post} />
-                </Link>
+                </div>
             ))}
         </div>
     );

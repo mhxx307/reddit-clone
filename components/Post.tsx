@@ -12,7 +12,7 @@ import TimeAgo from "react-timeago";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
-import { LegacyRef, forwardRef, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_VOTES_BY_POST_ID } from "graphql/queries";
 import { ADD_VOTE } from "graphql/mutations";
@@ -21,7 +21,7 @@ interface PostProps {
     post: Post;
 }
 
-const Post = forwardRef(({ post }: PostProps, ref: LegacyRef<HTMLDivElement> | undefined) => {
+function Post({ post }: PostProps) {
     const [vote, setVote] = useState<boolean>();
     const { data: session } = useSession();
 
@@ -78,10 +78,7 @@ const Post = forwardRef(({ post }: PostProps, ref: LegacyRef<HTMLDivElement> | u
     };
 
     return (
-        <div
-            className="flex w-full cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border-gray-600"
-            ref={ref}
-        >
+        <div className="flex w-full cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border-gray-600">
             {/* votes */}
             <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
                 <ArrowUpIcon
@@ -144,6 +141,6 @@ const Post = forwardRef(({ post }: PostProps, ref: LegacyRef<HTMLDivElement> | u
             </div>
         </div>
     );
-});
+}
 
 export default Post;
