@@ -39,3 +39,33 @@ export const GET_POSTS = gql`
         }
     }
 `;
+
+export const GET_POSTS_BY_TOPIC = gql`
+    query MyQuery($topic: String!) {
+        postListByTopic(topic: $topic) {
+            id
+            image
+            title
+            username
+            created_at
+            body
+            votes {
+                id
+                created_at
+                username
+                vote
+            }
+            subreddit {
+                topic
+                created_at
+                id
+            }
+            comments {
+                created_at
+                id
+                text
+                username
+            }
+        }
+    }
+`;

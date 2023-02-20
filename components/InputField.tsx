@@ -26,6 +26,7 @@ const InputField = ({ name, control, isTextArea, ...props }: InputFieldProps) =>
                     {...props}
                     ref={ref}
                     className="m-2 flex-1 bg-blue-50 p-2 outline-none"
+                    spellCheck="false"
                 />
             ) : (
                 <input
@@ -33,6 +34,7 @@ const InputField = ({ name, control, isTextArea, ...props }: InputFieldProps) =>
                     value={value}
                     onChange={onChange}
                     onBlur={onBlur}
+                    spellCheck="false"
                     {...props}
                     ref={ref}
                     className="m-2 flex-1 bg-blue-50 p-2 outline-none"

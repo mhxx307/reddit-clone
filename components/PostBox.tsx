@@ -18,14 +18,24 @@ interface PostData {
     imageURL?: string;
 }
 
-const schema = yup
-    .object({
-        title: yup.string().required(),
-        subreddit: yup.string().required(),
-    })
-    .required();
+interface PostBoxProps {
+    subreddit?: string;
+}
 
-function PostBox() {
+function PostBox({ subreddit }: PostBoxProps) {
+    const schema = yup
+        .object({
+            title: yup.string().required(),
+            subreddit: yup.string().required(),
+        })
+        .required();
+
+    const schemaSubreddit = yup
+        .object({
+            title: yup.string().required(),
+        })
+        .required();
+
     const { data: session } = useSession();
     const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
     const [addPost] = useMutation(ADD_POST, {
@@ -34,7 +44,7 @@ function PostBox() {
     const [addSubreddit] = useMutation(ADD_SUBREDDIT);
 
     const { register, setValue, handleSubmit, watch, control } = useForm<PostData>({
-        resolver: yupResolver(schema),
+        resolver: yupResolver(subreddit ? schemaSubreddit : schema),
         mode: "onSubmit",
         defaultValues: {
             title: "",
@@ -54,7 +64,7 @@ function PostBox() {
                 data: { getSubredditByTopic },
             } = await client.query({
                 query: GET_SUBREDDIT_BY_TOPIC,
-                variables: { topic: payload.subreddit },
+                variables: { topic: subreddit || payload.subreddit },
             });
 
             if (!getSubredditByTopic) {
@@ -144,7 +154,13 @@ function PostBox() {
                     control={control}
                     disabled={!session}
                     type="text"
-                    placeholder={session ? "Create a post to entering a tittle" : "Sign in to post"}
+                    placeholder={
+                        session
+                            ? subreddit
+                                ? `Create a post in r/${subreddit}`
+                                : "Create a post to entering a tittle"
+                            : "Sign in to post"
+                    }
                 />
 
                 <PhotoIcon
@@ -168,15 +184,17 @@ function PostBox() {
                         />
                     </div>
 
-                    <div className="flex items-center px-2">
-                        <p className="min-w-[90px]">Subreddit:</p>
-                        <InputField
-                            name="subreddit"
-                            control={control}
-                            type="text"
-                            placeholder="i.e. programming, reactjs, etc."
-                        />
-                    </div>
+                    {!subreddit && (
+                        <div className="flex items-center px-2">
+                            <p className="min-w-[90px]">Subreddit:</p>
+                            <InputField
+                                name="subreddit"
+                                control={control}
+                                type="text"
+                                placeholder="i.e. programming, reactjs, etc."
+                            />
+                        </div>
+                    )}
 
                     {imageBoxOpen && (
                         <div className="flex items-center px-2">

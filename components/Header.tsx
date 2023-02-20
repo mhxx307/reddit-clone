@@ -12,6 +12,7 @@ import {
 import { Spin as Hamburger } from "hamburger-react";
 import { useState } from "react";
 import { signIn, useSession, signOut } from "next-auth/react";
+import Link from "next/link";
 
 function Header() {
     const [isOpen, setOpen] = useState(false);
@@ -20,12 +21,14 @@ function Header() {
     return (
         <div className="sticky top-0 z-50 flex items-center bg-white px-4 py-2 shadow-sm">
             <div className="relative h-10 w-20 flex-shrink-0 cursor-pointer">
-                <Image
-                    src="https://logos-world.net/wp-content/uploads/2020/10/Reddit-Logo.png"
-                    alt="logo"
-                    className="object-contain"
-                    layout="fill"
-                />
+                <Link href="/">
+                    <Image
+                        src="https://logos-world.net/wp-content/uploads/2020/10/Reddit-Logo.png"
+                        alt="logo"
+                        className="object-contain"
+                        layout="fill"
+                    />
+                </Link>
             </div>
 
             <div className="mx-7 flex items-center xl:min-w-[300px]">

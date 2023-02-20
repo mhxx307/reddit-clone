@@ -111,6 +111,15 @@ type Query {
             configuration: "postgresql_config"
         )
 
+    postListByTopic(topic: String!): [post]
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT *, "post"."id" as id from "post" join "subreddit" on "subreddit"."id" = "post"."subreddit_id" where "subreddit"."topic" = $1 ORDER BY "post"."created_at" DESC
+            """
+            configuration: "postgresql_config"
+        )
+
     postPaginatedList(first: Int, after: Int): [post]
         @dbquery(
             type: "postgresql"

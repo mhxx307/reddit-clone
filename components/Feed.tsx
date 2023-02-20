@@ -1,12 +1,20 @@
-import { GET_POSTS } from "graphql/queries";
+import { GET_POSTS, GET_POSTS_BY_TOPIC } from "graphql/queries";
 import { useQuery } from "@apollo/client";
 import Post from "./Post";
 import { PostSkeleton } from "./skeletons";
 
-function Feed() {
-    const { data, error, loading } = useQuery(GET_POSTS);
+interface FeedProps {
+    topic?: string;
+}
 
-    const posts: Post[] = data?.postList;
+function Feed({ topic }: FeedProps) {
+    const { data, error, loading } = !topic
+        ? useQuery(GET_POSTS)
+        : useQuery(GET_POSTS_BY_TOPIC, {
+              variables: { topic },
+          });
+
+    const posts: Post[] = !topic ? data?.postList : data?.postListByTopic;
 
     if (error) {
         console.log("error", error);
