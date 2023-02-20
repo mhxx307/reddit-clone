@@ -8,6 +8,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { ADD_COMMENT } from "graphql/mutations";
 import { toast } from "react-toastify";
 import TimeAgo from "react-timeago";
+import { useEffect } from "react";
+import { supabaseClient } from "libs/supabase";
 
 interface CommentData {
     comment: string;
@@ -20,11 +22,34 @@ function PostDetailPage() {
         data,
         loading: getPostLoading,
         error,
+        refetch: refetchPost,
     } = useQuery(GET_POST_BY_ID, {
         variables: {
             id: router.query.postId,
         },
     });
+
+    useEffect(() => {
+        const subscription = supabaseClient
+            .channel("comment")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "comment",
+                },
+                (payload) => {
+                    console.log("payload", payload);
+                    refetchPost();
+                }
+            )
+            .subscribe();
+
+        return () => {
+            supabaseClient.removeChannel(subscription);
+        };
+    }, []);
 
     const [addComment, { loading: addCommentLoading }] = useMutation(ADD_COMMENT, {
         refetchQueries: [GET_POST_BY_ID, "post"],
