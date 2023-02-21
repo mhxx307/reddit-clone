@@ -31,10 +31,7 @@ export const GET_POSTS = gql`
                 id
             }
             comments {
-                created_at
                 id
-                text
-                username
             }
             user {
                 image
@@ -64,10 +61,7 @@ export const GET_POSTS_BY_TOPIC = gql`
                 id
             }
             comments {
-                created_at
                 id
-                text
-                username
             }
             user {
                 image
@@ -137,6 +131,7 @@ export const GET_USER_BY_NAME = gql`
             name
             image
             email
+            id
         }
     }
 `;

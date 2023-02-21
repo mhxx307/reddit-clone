@@ -1,17 +1,17 @@
 import { useSession } from "next-auth/react";
-import { Avatar, InputField } from "components";
+import { useRouter } from "next/router";
 import { LinkIcon, PhotoIcon } from "@heroicons/react/24/outline";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMutation } from "@apollo/client";
-import { ADD_POST, ADD_SUBREDDIT } from "graphql/mutations";
-// import client from "libs/apollo-client";
-import { GET_POSTS, GET_POSTS_BY_TOPIC, GET_SUBREDDIT_BY_TOPIC } from "graphql/queries";
 import { toast } from "react-toastify";
-import { useRouter } from "next/router";
-import { initializeApollo } from "libs/apollo-client";
+
+import { Avatar, InputField } from "@/components/shared";
+import { ADD_POST, ADD_SUBREDDIT } from "@/graphql/mutations";
+import { GET_POSTS, GET_POSTS_BY_TOPIC, GET_SUBREDDIT_BY_TOPIC } from "@/graphql/queries";
+import { initializeApollo } from "@/libs/apollo-client";
 
 interface PostData {
     title: string;

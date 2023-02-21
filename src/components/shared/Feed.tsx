@@ -1,5 +1,5 @@
 import Post from "./Post";
-import { PostSkeleton } from "./skeletons";
+import { PostSkeleton } from "../skeletons";
 
 interface FeedProps {
     postList?: Post[];

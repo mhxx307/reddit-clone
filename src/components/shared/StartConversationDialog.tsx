@@ -1,9 +1,13 @@
-import { useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import { Dialog, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { GET_USER_BY_NAME } from "graphql/queries";
+import { supabaseClient } from "@/libs/supabase";
 import { useSession } from "next-auth/react";
-import { Fragment, memo, useState } from "react";
+import { Fragment, memo, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+import { GET_USER_BY_NAME } from "@/graphql/queries";
+import Avatar from "./Avatar";
 
 interface DialogProps {
     closeModal: () => void;
@@ -12,28 +16,68 @@ interface DialogProps {
 
 function MyDialog({ closeModal, isOpen }: DialogProps) {
     const [username, setUsername] = useState("");
+    const [userSearch, setUserSearch] = useState<User>();
+    const [sender, setSender] = useState<User>();
     const { data: session } = useSession();
+    const client = useApolloClient();
 
-    // const { data: recipientUser } = useQuery(GET_USER_BY_NAME, {
-    //     variables: {
-    //         name: username,
-    //     },
-    // });
+    useEffect(() => {
+        // Get a list of all the recipient IDs that the user has chatted with
+        (async () => {
+            const { data } = await client.query({
+                query: GET_USER_BY_NAME,
+                variables: { name: session?.user?.name },
+            });
 
-    // console.log(recipientUser);
+            const sender = data.getUserByName;
+            setSender(sender);
+        })();
+    }, []);
 
-    function handleCreateConversation() {
-        console.log("Username", username);
+    const handleSearchUser = async () => {
         if (!username) return;
+        const { data } = await client.query({
+            query: GET_USER_BY_NAME,
+            variables: { name: username },
+        });
+
+        if (data.getUserByName.name === session?.user?.name) return;
+        setUserSearch(data.getUserByName);
+        console.log("user search result: ", userSearch);
+    };
+
+    const handleCreateConversation = async () => {
+        console.log("Username: ", username);
+        if (!username) {
+            toast.error("Please enter a username", {
+                toastId: "username-required",
+            });
+            return;
+        }
 
         const isInvitingSelf = session?.user?.name === username;
 
         if (!isInvitingSelf) {
-            // add conversation to db
+            // Check if a conversation between the two users exists
+            const { data: existingMessages, error } = await supabaseClient
+                .from("messages")
+                .select("*")
+                .eq("sender_id", sender?.id)
+                .eq("recipient_id", userSearch?.id);
+
+            if (existingMessages?.length! > 0) {
+                console.log("Conversation already exists");
+            }
+
+            console.log("conversation does not exist");
+        } else {
+            toast.error("You can't invite yourself", {
+                toastId: "invite-self",
+            });
         }
 
         closeModal();
-    }
+    };
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -82,8 +126,25 @@ function MyDialog({ closeModal, isOpen }: DialogProps) {
                                             value={username}
                                             onChange={(e) => setUsername(e.target.value)}
                                         />
+                                        {username && (
+                                            <button onClick={handleSearchUser} type="button">
+                                                Search
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
+
+                                {userSearch && (
+                                    <div className="mt-4 flex items-center space-x-2">
+                                        <Avatar image={userSearch?.image} />
+                                        <p
+                                            onClick={handleCreateConversation}
+                                            className="cursor-pointer text-xs hover:text-blue-400 transition-colors"
+                                        >
+                                            Add user
+                                        </p>
+                                    </div>
+                                )}
 
                                 <div className="mt-4 flex space-x-4">
                                     <button
@@ -92,14 +153,6 @@ function MyDialog({ closeModal, isOpen }: DialogProps) {
                                         onClick={closeModal}
                                     >
                                         Close
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                                        onClick={handleCreateConversation}
-                                    >
-                                        Enter
                                     </button>
                                 </div>
                             </Dialog.Panel>

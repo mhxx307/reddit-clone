@@ -1,11 +1,11 @@
-import { Avatar, Feed, PostBox } from "components";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { GET_POSTS_BY_TOPIC } from "graphql/queries";
-// import client from "libs/apollo-client";
 import { GetServerSideProps } from "next";
-import { addApolloState, initializeApollo } from "libs/apollo-client";
+
 import { useQuery } from "@apollo/client";
+import { GET_POSTS_BY_TOPIC } from "@/graphql/queries";
+import { Avatar, Feed, PostBox } from "@/components/shared";
+import { addApolloState, initializeApollo } from "@/libs/apollo-client";
 
 function SubredditPage() {
     const {
@@ -18,7 +18,6 @@ function SubredditPage() {
         variables: {
             topic: topic,
         },
-        notifyOnNetworkStatusChange: true,
     });
 
     console.log(posts);
@@ -40,7 +39,7 @@ function SubredditPage() {
 
             <div className="mx-auto mt-5 max-w-5xl pb-10">
                 <PostBox subreddit={topic as string} />
-                <Feed postList={posts.postListByTopic} />
+                <Feed postList={posts?.postListByTopic} />
             </div>
         </div>
     );
@@ -48,19 +47,19 @@ function SubredditPage() {
 
 export default SubredditPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
-    let topic = params?.topic;
-    const client = initializeApollo();
+// export const getServerSideProps: GetServerSideProps = async ({ req, res, params }) => {
+//     let topic = params?.topic;
+//     const client = initializeApollo();
 
-    // Code will go here
-    await client.query({
-        query: GET_POSTS_BY_TOPIC,
-        variables: {
-            topic: topic,
-        },
-    });
+//     // Code will go here
+//     await client.query({
+//         query: GET_POSTS_BY_TOPIC,
+//         variables: {
+//             topic: topic,
+//         },
+//     });
 
-    return addApolloState(client, {
-        props: {},
-    });
-};
+//     return addApolloState(client, {
+//         props: {},
+//     });
+// };

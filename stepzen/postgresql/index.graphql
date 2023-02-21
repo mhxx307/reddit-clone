@@ -44,25 +44,13 @@ type user {
     image: String
 }
 
-# type paticipant {
-#     id: ID
-#     user_id: ID
-#     room_id: ID
-#     created_at: DateTime
-# }
-
-# type message {
-#     id: ID
-#     user_id: ID
-#     room_id: ID
-#     text: String
-#     created_at: DateTime
-# }
-
-# type room {
-#     id: ID
-#     created_at: DateTime
-# }
+type message {
+    id: ID
+    sender_id: ID
+    recipient_id: ID
+    text: String
+    created_at: DateTime
+}
 
 """
 The following queries are just a set of examples of how to access your schema.

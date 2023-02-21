@@ -7,16 +7,18 @@ import {
     GifIcon,
     ShareIcon,
 } from "@heroicons/react/24/outline";
-import Avatar from "./Avatar";
 import TimeAgo from "react-timeago";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { GET_VOTES_BY_POST_ID } from "graphql/queries";
-import { ADD_VOTE } from "graphql/mutations";
 import { useRouter } from "next/router";
+
+import Avatar from "./Avatar";
+import { GET_VOTES_BY_POST_ID } from "@/graphql/queries";
+import { ADD_VOTE } from "@/graphql/mutations";
+import { Jelly } from "@uiball/loaders";
 
 interface PostProps {
     post: Post;

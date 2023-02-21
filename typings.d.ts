@@ -19,6 +19,14 @@ type User = {
     email: string;
 };
 
+type message = {
+    id: string;
+    sender_id: string;
+    recipient_id: string;
+    text: string;
+    created_at: string;
+};
+
 type PostComment = {
     id: string;
     username: string;

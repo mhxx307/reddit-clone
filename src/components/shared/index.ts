@@ -1,4 +1,3 @@
-export { default as Header } from "./Header";
 export { default as PostBox } from "./PostBox";
 export { default as Avatar } from "./Avatar";
 export { default as InputField } from "./InputField";
@@ -8,3 +7,4 @@ export { default as SubredditRow } from "./SubredditRow";
 export { default as ConversationList } from "./ConversationList";
 export { default as Auth } from "./Auth";
 export { default as StartConversationDialog } from "./StartConversationDialog";
+export { default as Head } from "./Head";
