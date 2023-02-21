@@ -1,4 +1,4 @@
-import { GET_POST_BY_ID } from "graphql/queries";
+import { GET_POSTS, GET_POST_BY_ID } from "graphql/queries";
 import { useRouter } from "next/router";
 import { useQuery, useMutation } from "@apollo/client";
 import { Avatar, Post } from "components";
@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import TimeAgo from "react-timeago";
 import { useEffect } from "react";
 import { supabaseClient } from "libs/supabase";
+import { GetStaticProps, GetStaticPropsContext } from "next";
+import { addApolloState, initializeApollo } from "libs/apollo-client";
 
 interface CommentData {
     comment: string;
@@ -144,3 +146,29 @@ function PostDetailPage() {
 }
 
 export default PostDetailPage;
+
+export const getStaticPaths = async () => {
+    const apolloClient = initializeApollo();
+
+    const { data } = await apolloClient.query({
+        query: GET_POSTS,
+    });
+
+    return {
+        paths: data.postList.map((item: Post) => ({ params: { postId: item.id.toString() } })),
+        fallback: "blocking",
+    };
+};
+
+export const getStaticProps: GetStaticProps = async (context: GetStaticPropsContext) => {
+    const apolloClient = initializeApollo();
+
+    await apolloClient.query({
+        query: GET_POST_BY_ID,
+        variables: {
+            id: context.params?.postId,
+        },
+    });
+
+    return addApolloState(apolloClient, { props: {} });
+};
