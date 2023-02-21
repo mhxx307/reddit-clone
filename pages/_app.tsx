@@ -3,11 +3,13 @@ import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { Header } from "components";
 import { ApolloProvider } from "@apollo/client";
-import client from "libs/apollo-client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useApollo } from "libs/apollo-client";
+// import client from "libs/apollo-client";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+    const apolloClient = useApollo(pageProps);
     return (
         <>
             <ToastContainer
@@ -23,7 +25,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
                 theme="light"
             />
 
-            <ApolloProvider client={client}>
+            <ApolloProvider client={apolloClient}>
                 <SessionProvider session={session}>
                     <div className="h-screen overflow-y-scroll bg-slate-200">
                         <Header />

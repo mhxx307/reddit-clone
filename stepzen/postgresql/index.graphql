@@ -10,6 +10,7 @@ type comment {
 type post {
     votes: [vote] @materializer(query: "getVotesByPostId", arguments: [{ name: "post_id", field: "id" }])
     username: String
+    user: user @materializer(query: "getUserByName", arguments: [{ name: "name", field: "username" }])
     title: String
     subreddit_id: ID
     subreddit: subreddit @materializer(query: "getSubreddit")
@@ -35,6 +36,33 @@ type vote {
     id: ID!
     created_at: DateTime
 }
+
+type user {
+    id: ID
+    name: String
+    email: String
+    image: String
+}
+
+# type paticipant {
+#     id: ID
+#     user_id: ID
+#     room_id: ID
+#     created_at: DateTime
+# }
+
+# type message {
+#     id: ID
+#     user_id: ID
+#     room_id: ID
+#     text: String
+#     created_at: DateTime
+# }
+
+# type room {
+#     id: ID
+#     created_at: DateTime
+# }
 
 """
 The following queries are just a set of examples of how to access your schema.
@@ -210,6 +238,15 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
+    getUserByName(name: String): user
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT * FROM "users" WHERE "name" = $1
+            """
+            configuration: "postgresql_config"
+        )
 }
 
 """
@@ -342,4 +379,13 @@ type Mutation {
             """
             configuration: "postgresql_config"
         )
+
+    # insertConversation(username: String, recepient_username: String): conversation
+    #     @dbquery(
+    #         type: "postgresql"
+    #         schema: "public"
+    #         table: "conversation"
+    #         dml: INSERT
+    #         configuration: "postgresql_config"
+    #     )
 }

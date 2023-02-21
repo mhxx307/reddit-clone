@@ -7,3 +7,4 @@ export { default as Post } from "./Post";
 export { default as SubredditRow } from "./SubredditRow";
 export { default as ConversationList } from "./ConversationList";
 export { default as Auth } from "./Auth";
+export { default as StartConversationDialog } from "./StartConversationDialog";

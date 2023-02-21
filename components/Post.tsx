@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_VOTES_BY_POST_ID } from "graphql/queries";
 import { ADD_VOTE } from "graphql/mutations";
+import { useRouter } from "next/router";
 
 interface PostProps {
     post: Post;
@@ -77,8 +78,13 @@ function Post({ post }: PostProps) {
         return displayNumber;
     };
 
+    const router = useRouter();
+
     return (
-        <div className="flex w-full cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border-gray-600">
+        <div
+            className="flex w-full cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border-gray-600"
+            onClick={() => router.push(`http://localhost:3000/post/${post.id}`)}
+        >
             {/* votes */}
             <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
                 <ArrowUpIcon
@@ -96,7 +102,7 @@ function Post({ post }: PostProps) {
             <div className="p-3 pb-1">
                 {/* header */}
                 <div className="flex items-center space-x-2">
-                    <Avatar seed={post.username} />
+                    <Avatar image={post.user?.image} seed={post.user.name} />
                     <p className="text-xs text-gray-400">
                         <Link href={`/subreddit/${post.subreddit.topic}`}>
                             <span className="font-bold text-black hover:text-blue-400 hover:underline">

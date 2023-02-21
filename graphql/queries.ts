@@ -36,6 +36,9 @@ export const GET_POSTS = gql`
                 text
                 username
             }
+            user {
+                image
+            }
         }
     }
 `;
@@ -65,6 +68,9 @@ export const GET_POSTS_BY_TOPIC = gql`
                 id
                 text
                 username
+            }
+            user {
+                image
             }
         }
     }
@@ -96,6 +102,9 @@ export const GET_POST_BY_ID = gql`
                 username
                 created_at
             }
+            user {
+                image
+            }
         }
     }
 `;
@@ -118,6 +127,16 @@ export const SUBREDDIT_PAGINATED_LIST = gql`
             created_at
             id
             topic
+        }
+    }
+`;
+
+export const GET_USER_BY_NAME = gql`
+    query MyQuery($name: String!) {
+        getUserByName(name: $name) {
+            name
+            image
+            email
         }
     }
 `;

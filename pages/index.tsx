@@ -1,14 +1,20 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, GetStaticProps } from "next";
 import Head from "next/head";
 import { Feed, PostBox, SubredditRow } from "components";
 import { useQuery } from "@apollo/client";
-import { SUBREDDIT_PAGINATED_LIST } from "graphql/queries";
+import { GET_POSTS, SUBREDDIT_PAGINATED_LIST } from "graphql/queries";
+import { addApolloState, initializeApollo } from "libs/apollo-client";
+// import client from "libs/apollo-client";
 
-const Home: NextPage = () => {
+const Home = () => {
     const { data } = useQuery(SUBREDDIT_PAGINATED_LIST, {
         variables: {
             limit: 10,
         },
+    });
+
+    const { data: posts } = useQuery(GET_POSTS, {
+        notifyOnNetworkStatusChange: true,
     });
 
     const subredditList: Subreddit[] = data?.subredditPaginatedList;
@@ -23,7 +29,7 @@ const Home: NextPage = () => {
             <PostBox />
 
             <div className="flex">
-                <Feed />
+                <Feed postList={posts.postList} />
 
                 <div className="sticky top-36 mx-5 hidden mt-5 h-fit min-w-[300px] rounded-md border border-gray-300 bg-white lg:inline">
                     <p className="text-md mb-1 p-4 pb-3 font-bold">Top communities</p>
@@ -40,3 +46,15 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+    const client = initializeApollo();
+    // Code will go here
+    await client.query({
+        query: GET_POSTS,
+    });
+
+    return addApolloState(client, {
+        props: {},
+    });
+};

@@ -7,9 +7,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useMutation } from "@apollo/client";
 import { ADD_POST, ADD_SUBREDDIT } from "graphql/mutations";
-import client from "libs/apollo-client";
-import { GET_POSTS, GET_SUBREDDIT_BY_TOPIC } from "graphql/queries";
+// import client from "libs/apollo-client";
+import { GET_POSTS, GET_POSTS_BY_TOPIC, GET_SUBREDDIT_BY_TOPIC } from "graphql/queries";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
+import { initializeApollo } from "libs/apollo-client";
 
 interface PostData {
     title: string;
@@ -36,14 +38,18 @@ function PostBox({ subreddit }: PostBoxProps) {
         })
         .required();
 
+    const {
+        query: { topic },
+    } = useRouter();
+
     const { data: session } = useSession();
     const [imageBoxOpen, setImageBoxOpen] = useState<boolean>(false);
     const [addPost] = useMutation(ADD_POST, {
-        refetchQueries: [GET_POSTS, "postList"],
+        refetchQueries: !topic ? [GET_POSTS, "postList"] : [GET_POSTS_BY_TOPIC, "postListByTopic"],
     });
     const [addSubreddit] = useMutation(ADD_SUBREDDIT);
 
-    const { register, setValue, handleSubmit, watch, control } = useForm<PostData>({
+    const { setValue, handleSubmit, watch, control } = useForm<PostData>({
         resolver: yupResolver(subreddit ? schemaSubreddit : schema),
         mode: "onSubmit",
         defaultValues: {
@@ -59,6 +65,7 @@ function PostBox({ subreddit }: PostBoxProps) {
         const notification = toast.loading("Creating a post...", { toastId: "post-loading" });
 
         try {
+            const client = initializeApollo();
             // Query for the subreddit topic
             const {
                 data: { getSubredditByTopic },
@@ -147,7 +154,7 @@ function PostBox({ subreddit }: PostBoxProps) {
             onSubmit={handleSubmit(handleCreatePost)}
         >
             <div className="flex items-center space-x-3">
-                <Avatar large />
+                <Avatar large image={session?.user?.image as string} />
 
                 <InputField
                     name="title"

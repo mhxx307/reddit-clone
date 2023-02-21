@@ -1,5 +1,6 @@
 type Post = {
     username: string;
+    user: User;
     title: string;
     subreddit_id: string;
     image: string;
@@ -9,6 +10,13 @@ type Post = {
     subreddit: Subreddit;
     comments: PostComment[];
     votes: Vote[];
+};
+
+type User = {
+    name: string;
+    image: string;
+    id: string;
+    email: string;
 };
 
 type PostComment = {

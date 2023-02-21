@@ -4,9 +4,10 @@ import Image from "next/image";
 interface AvatarProps {
     seed?: string;
     large?: boolean;
+    image?: string;
 }
 
-function Avatar({ seed, large }: AvatarProps) {
+function Avatar({ seed, large, image }: AvatarProps) {
     const { data: session } = useSession();
     return (
         <div
@@ -17,8 +18,8 @@ function Avatar({ seed, large }: AvatarProps) {
             <Image
                 layout="fill"
                 src={
-                    session?.user?.image
-                        ? session?.user?.image
+                    image
+                        ? image
                         : `https://api.dicebear.com/5.x/open-peeps/png?seed=${
                               seed || session?.user?.name || "placeholder"
                           }`

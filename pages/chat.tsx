@@ -1,7 +1,18 @@
 import { EllipsisVerticalIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { Auth, Avatar, ConversationList } from "components";
+import { Auth, Avatar, ConversationList, StartConversationDialog } from "components";
+import { useCallback, useState } from "react";
 
 function chat() {
+    let [isOpen, setIsOpen] = useState(true);
+
+    const closeModal = useCallback(() => {
+        setIsOpen(false);
+    }, []);
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
     return (
         // <Auth>
         <div className="grid grid-cols-10 bg-white p-3 min-h-[calc(100%-58px)]">
@@ -27,7 +38,10 @@ function chat() {
                     </form>
 
                     {/* start conversation button */}
-                    <button className="p-2 text-blue-400 hover:bg-gray-200 transition-colors flex justify-center items-center w-full font-bold">
+                    <button
+                        className="p-2 text-blue-400 hover:bg-gray-200 transition-colors flex justify-center items-center w-full font-bold"
+                        onClick={() => openModal()}
+                    >
                         Start a new conversation
                     </button>
 
@@ -41,7 +55,9 @@ function chat() {
             </div>
 
             {/* content */}
-            <div className="col-span-8"></div>
+            <div className="col-span-8">
+                <StartConversationDialog closeModal={closeModal} isOpen={isOpen} />
+            </div>
         </div>
         // </Auth>
     );

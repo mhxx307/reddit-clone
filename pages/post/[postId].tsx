@@ -54,7 +54,7 @@ function PostDetailPage() {
     const [addComment, { loading: addCommentLoading }] = useMutation(ADD_COMMENT, {
         refetchQueries: [GET_POST_BY_ID, "post"],
     });
-    const { register, setValue, handleSubmit, watch, control } = useForm<CommentData>({});
+    const { register, setValue, handleSubmit } = useForm<CommentData>({});
 
     const handleComment: SubmitHandler<CommentData> = async (payload) => {
         // post comment here...
