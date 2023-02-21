@@ -83,7 +83,7 @@ function Post({ post }: PostProps) {
     return (
         <div
             className="flex w-full cursor-pointer rounded-md border border-gray-300 bg-white shadow-sm hover:border-gray-600"
-            onClick={() => router.push(`http://localhost:3000/post/${post.id}`)}
+            onClick={() => router.push(`https://reddit-clone-gamma-one.vercel.app/post/${post.id}`)}
         >
             {/* votes */}
             <div className="flex flex-col items-center justify-start space-y-1 rounded-l-md bg-gray-50 p-4 text-gray-400">
