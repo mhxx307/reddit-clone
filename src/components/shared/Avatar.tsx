@@ -16,7 +16,6 @@ function Avatar({ seed, large, image }: AvatarProps) {
             }`}
         >
             <Image
-                layout="fill"
                 src={
                     image
                         ? image
@@ -25,7 +24,10 @@ function Avatar({ seed, large, image }: AvatarProps) {
                           }`
                 }
                 alt="avatar"
-                className="object-cover flex-shrink-0"
+                className="object-cover flex-shrink-0 w-full h-full"
+                sizes="100%"
+                width={1}
+                height={1}
             />
         </div>
     );

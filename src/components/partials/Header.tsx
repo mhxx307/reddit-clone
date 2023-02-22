@@ -23,10 +23,12 @@ function Header() {
             <div className="relative h-10 w-20 flex-shrink-0 cursor-pointer">
                 <Link href="/">
                     <Image
-                        src="https://logos-world.net/wp-content/uploads/2020/10/Reddit-Logo.png"
+                        src="/teddyl.png"
                         alt="logo"
-                        className="object-contain"
-                        layout="fill"
+                        className="object-contain w-full h-full"
+                        width={1}
+                        height={1}
+                        sizes="100%"
                     />
                 </Link>
             </div>
@@ -67,7 +69,14 @@ function Header() {
                     className="hidden lg:flex items-center space-x-2 border border-gray-100 p-2 cursor-pointer hover:opacity-60 transition-opacity"
                 >
                     <div className="relative h-5 w-5 flex-shrink-0">
-                        <Image src="/reddit.png" alt="sign" layout="fill" className="object-contain" />
+                        <Image
+                            src="/teddy.png"
+                            alt="sign"
+                            className="object-contain w-full h-full"
+                            width={1}
+                            height={1}
+                            sizes="100%"
+                        />
                     </div>
                     <div className="flex-1 text-xs">
                         <p className="truncate">{session?.user?.name}</p>
@@ -82,7 +91,14 @@ function Header() {
                     className="hidden lg:flex items-center space-x-2 border border-gray-100 p-2 cursor-pointer hover:opacity-60 transition-opacity"
                 >
                     <div className="relative h-5 w-5 flex-shrink-0">
-                        <Image src="/reddit.png" alt="sign" layout="fill" className="object-contain" />
+                        <Image
+                            src="/teddy.png"
+                            alt="sign"
+                            className="object-contain h-full w-full"
+                            width={1}
+                            height={1}
+                            sizes="100%"
+                        />
                     </div>
                     <p className="text-gray-400">Login</p>
                 </div>

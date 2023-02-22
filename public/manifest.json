@@ -4,8 +4,8 @@
     "display": "standalone",
     "scope": "/",
     "start_url": "/",
-    "name": "SecondChance",
-    "short_name": "SecondChance",
-    "description": "Web trao đổi mua bán đồ cũ.",
+    "name": "teddy",
+    "short_name": "teddy",
+    "description": "Web giải trí",
     "icons": []
 }

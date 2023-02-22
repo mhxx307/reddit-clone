@@ -104,7 +104,7 @@ function Post({ post }: PostProps) {
             <div className="p-3 pb-1">
                 {/* header */}
                 <div className="flex items-center space-x-2">
-                    <Avatar image={post.user?.image} seed={post.user.name} />
+                    {post.user?.image ? <Avatar image={post.user.image} /> : <Avatar seed={post.user.name} />}
                     <p className="text-xs text-gray-400">
                         <Link href={`/subreddit/${post.subreddit.topic}`}>
                             <span className="font-bold text-black hover:text-blue-400 hover:underline">

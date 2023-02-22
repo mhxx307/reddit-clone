@@ -48,3 +48,12 @@ export const ADD_VOTE = gql`
         }
     }
 `;
+
+export const ADD_MESSAGE = gql`
+    mutation MyMutation($recipient_id: ID!, $sender_id: ID!, $text: String!) {
+        insertMessage(recipient_id: $recipient_id, sender_id: $sender_id, text: $text) {
+            id
+            created_at
+        }
+    }
+`;

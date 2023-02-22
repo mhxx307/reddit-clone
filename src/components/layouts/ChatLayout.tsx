@@ -20,7 +20,7 @@ function ChatLayout({ children }: { children: any }) {
         <Auth>
             <main className="h-screen overflow-y-scroll bg-slate-200">
                 <Header />
-                <div className="grid grid-cols-10 bg-white p-3 h-full">
+                <div className="grid grid-cols-10 bg-white p-3 h-[calc(100%-4.2rem)]">
                     {/* sidebar */}
                     <div className="col-span-2 space-y-4">
                         {/* header */}

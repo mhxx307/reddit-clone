@@ -1,49 +1,41 @@
-import { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import Link from "next/link";
-import { GET_USER_BY_NAME } from "@/graphql/queries";
-import { useApolloClient } from "@apollo/client";
-import { useSession } from "next-auth/react";
-import { supabaseClient } from "@/libs/supabase";
+import { GET_CONTACT_LIST_BY_SENDER_ID } from "@/graphql/queries";
+import { useQuery } from "@apollo/client";
+import { useRouter } from "next/router";
+import { useUserInfo } from "@/hooks";
 
 function ConversationList() {
-    const client = useApolloClient();
-    const [contactList, setContactList] = useState<any>();
-    const { data: session } = useSession();
+    const { userInfo: sender } = useUserInfo();
 
-    useEffect(() => {
-        // Get a list of all the recipient IDs that the user has chatted with
-        (async () => {
-            const { data } = await client.query({
-                query: GET_USER_BY_NAME,
-                variables: { name: session?.user?.name },
-            });
+    const { data: contactList } = useQuery(GET_CONTACT_LIST_BY_SENDER_ID, {
+        variables: { sender_id: sender?.id },
+    });
 
-            const sender = data.getUserByName;
-            console.log("user sender: ", sender);
-
-            const { data: contacts, error } = await supabaseClient
-                .from("message")
-                .select("*")
-                .eq("sender_id", sender?.id);
-
-            console.log("contact list: ", contacts);
-            setContactList(contacts);
-        })();
-    }, [contactList]);
+    const router = useRouter();
+    const { recipientId } = router.query;
 
     return (
         <>
-            {contactList?.map((contact: any) => (
-                <Link
-                    key={contact.id}
-                    href={`chat/123`}
-                    className="flex items-center cursor-pointer hover:bg-gray-200 transition-colors py-2"
-                >
-                    <Avatar />
-                    <p className="ml-5 text-sm">Username or email</p>
-                </Link>
-            ))}
+            {contactList?.getContactListBySenderId?.map(
+                (contact: any) =>
+                    contact.recipient.name !== sender?.name && (
+                        <Link
+                            key={contact.id}
+                            href={`chat/${contact.recipient.id}`}
+                            className={`flex items-center cursor-pointer hover:bg-gray-200 transition-colors py-2 ${
+                                recipientId === contact.recipient.id && "bg-gray-200"
+                            }`}
+                        >
+                            {contact.recipient.image ? (
+                                <Avatar image={contact.recipient.image} />
+                            ) : (
+                                <Avatar seed={contact.recipient.name} />
+                            )}
+                            <p className="ml-5 text-sm">{contact.recipient.name}</p>
+                        </Link>
+                    )
+            )}
         </>
     );
 }

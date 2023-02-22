@@ -47,7 +47,9 @@ type user {
 type message {
     id: ID
     sender_id: ID
+    sender: user @materializer(query: "getUserById", arguments: [{ name: "id", field: "sender_id" }])
     recipient_id: ID
+    recipient: user @materializer(query: "getUserById", arguments: [{ name: "id", field: "recipient_id" }])
     text: String
     created_at: DateTime
 }
@@ -235,6 +237,33 @@ type Query {
             """
             configuration: "postgresql_config"
         )
+
+    getUserById(id: ID!): user
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT * FROM "users" WHERE "id" = $1
+            """
+            configuration: "postgresql_config"
+        )
+
+    getContactListBySenderId(sender_id: ID!): [message]
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT DISTINCT ON (recipient_id) * FROM "message" WHERE ("sender_id" = $1 OR recipient_id = $1) AND "sender_id" != "recipient_id"  ORDER BY "recipient_id", "created_at" DESC
+            """
+            configuration: "postgresql_config"
+        )
+
+    getMessagesBetweenSenderAndRecipient(sender_id: ID!, recipient_id: ID!): [message]
+        @dbquery(
+            type: "postgresql"
+            query: """
+            SELECT * FROM "message" WHERE "sender_id" = $1 AND recipient_id = $2 OR "sender_id" = $2 AND recipient_id = $1  ORDER BY "created_at" ASC
+            """
+            configuration: "postgresql_config"
+        )
 }
 
 """
@@ -368,12 +397,12 @@ type Mutation {
             configuration: "postgresql_config"
         )
 
-    # insertConversation(username: String, recepient_username: String): conversation
-    #     @dbquery(
-    #         type: "postgresql"
-    #         schema: "public"
-    #         table: "conversation"
-    #         dml: INSERT
-    #         configuration: "postgresql_config"
-    #     )
+    insertMessage(sender_id: ID, recipient_id: ID, text: String): message
+        @dbquery(
+            type: "postgresql"
+            schema: "public"
+            table: "message"
+            dml: INSERT
+            configuration: "postgresql_config"
+        )
 }

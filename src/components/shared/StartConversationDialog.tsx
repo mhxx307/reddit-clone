@@ -1,13 +1,14 @@
-import { useApolloClient, useQuery } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import { Dialog, Transition } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { supabaseClient } from "@/libs/supabase";
 import { useSession } from "next-auth/react";
-import { Fragment, memo, useEffect, useState } from "react";
+import { Fragment, memo, useState } from "react";
 import { toast } from "react-toastify";
 
-import { GET_USER_BY_NAME } from "@/graphql/queries";
+import { GET_MESSAGES_BETWEEN_SENDER_AND_RECIPIENT, GET_USER_BY_NAME } from "@/graphql/queries";
 import Avatar from "./Avatar";
+import { useRouter } from "next/router";
+import { useUserInfo } from "@/hooks";
 
 interface DialogProps {
     closeModal: () => void;
@@ -17,22 +18,11 @@ interface DialogProps {
 function MyDialog({ closeModal, isOpen }: DialogProps) {
     const [username, setUsername] = useState("");
     const [userSearch, setUserSearch] = useState<User>();
-    const [sender, setSender] = useState<User>();
     const { data: session } = useSession();
     const client = useApolloClient();
+    const router = useRouter();
 
-    useEffect(() => {
-        // Get a list of all the recipient IDs that the user has chatted with
-        (async () => {
-            const { data } = await client.query({
-                query: GET_USER_BY_NAME,
-                variables: { name: session?.user?.name },
-            });
-
-            const sender = data.getUserByName;
-            setSender(sender);
-        })();
-    }, []);
+    const { userInfo: sender } = useUserInfo();
 
     const handleSearchUser = async () => {
         if (!username) return;
@@ -41,39 +31,48 @@ function MyDialog({ closeModal, isOpen }: DialogProps) {
             variables: { name: username },
         });
 
-        if (data.getUserByName.name === session?.user?.name) return;
+        if (data?.getUserByName?.name === session?.user?.name) {
+            toast.error("You can't invite yourself", {
+                toastId: "invite-self",
+            });
+            return;
+        }
+
+        if (!data.getUserByName) {
+            toast.error("User not found", {
+                toastId: "user-not-found",
+            });
+            return;
+        }
+
         setUserSearch(data.getUserByName);
         console.log("user search result: ", userSearch);
     };
 
     const handleCreateConversation = async () => {
         console.log("Username: ", username);
-        if (!username) {
-            toast.error("Please enter a username", {
-                toastId: "username-required",
-            });
-            return;
-        }
+        if (!username) return;
 
         const isInvitingSelf = session?.user?.name === username;
 
         if (!isInvitingSelf) {
             // Check if a conversation between the two users exists
-            const { data: existingMessages, error } = await supabaseClient
-                .from("messages")
-                .select("*")
-                .eq("sender_id", sender?.id)
-                .eq("recipient_id", userSearch?.id);
+            const { data: existingMessages } = await client.query({
+                query: GET_MESSAGES_BETWEEN_SENDER_AND_RECIPIENT,
+                variables: { sender_id: sender?.id, recipient_id: userSearch?.id },
+            });
 
-            if (existingMessages?.length! > 0) {
+            if (existingMessages?.getMessagesBetweenSenderAndRecipient?.length > 0) {
                 console.log("Conversation already exists");
+                router.push(`/chat/${userSearch?.id}`);
+                closeModal();
+                return;
             }
 
             console.log("conversation does not exist");
+            router.push(`/chat/${userSearch?.id}`);
         } else {
-            toast.error("You can't invite yourself", {
-                toastId: "invite-self",
-            });
+            return;
         }
 
         closeModal();
@@ -136,7 +135,11 @@ function MyDialog({ closeModal, isOpen }: DialogProps) {
 
                                 {userSearch && (
                                     <div className="mt-4 flex items-center space-x-2">
-                                        <Avatar image={userSearch?.image} />
+                                        {userSearch.image ? (
+                                            <Avatar image={userSearch?.image} />
+                                        ) : (
+                                            <Avatar seed={userSearch?.name} />
+                                        )}
                                         <p
                                             onClick={handleCreateConversation}
                                             className="cursor-pointer text-xs hover:text-blue-400 transition-colors"

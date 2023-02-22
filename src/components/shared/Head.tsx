@@ -40,8 +40,8 @@ export default function Head(props: HeadProps) {
 
             <meta name="mobile-web-app-capable" content="yes" />
             <meta name="apple-mobile-web-app-capable" content="yes" />
-            <meta name="application-name" content="SecondChance" />
-            <meta name="apple-mobile-web-app-title" content="SecondChance" />
+            <meta name="application-name" content="teddy" />
+            <meta name="apple-mobile-web-app-title" content="teddy" />
             <meta name="theme-color" content="#EF4444" />
             <meta name="msapplication-navbutton-color" content="#EF4444" />
             <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

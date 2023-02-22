@@ -128,10 +128,39 @@ export const SUBREDDIT_PAGINATED_LIST = gql`
 export const GET_USER_BY_NAME = gql`
     query MyQuery($name: String!) {
         getUserByName(name: $name) {
+            id
             name
             image
             email
+        }
+    }
+`;
+
+export const GET_CONTACT_LIST_BY_SENDER_ID = gql`
+    query MyQuery($sender_id: ID!) {
+        getContactListBySenderId(sender_id: $sender_id) {
+            recipient {
+                email
+                id
+                image
+                name
+            }
             id
+        }
+    }
+`;
+
+export const GET_MESSAGES_BETWEEN_SENDER_AND_RECIPIENT = gql`
+    query MyQuery($recipient_id: ID!, $sender_id: ID!) {
+        getMessagesBetweenSenderAndRecipient(recipient_id: $recipient_id, sender_id: $sender_id) {
+            id
+            text
+            sender {
+                name
+            }
+            recipient {
+                name
+            }
         }
     }
 `;
