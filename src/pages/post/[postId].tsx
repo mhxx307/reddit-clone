@@ -159,7 +159,7 @@ export const getStaticPaths = async () => {
     });
 
     return {
-        paths: data.postList.map((item: Post) => ({ params: { postId: item.id.toString() } })),
+        paths: data?.postList?.map((item: Post) => ({ params: { postId: item.id.toString() } })),
         fallback: "blocking",
     };
 };
