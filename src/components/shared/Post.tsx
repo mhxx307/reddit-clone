@@ -18,7 +18,6 @@ import { useRouter } from "next/router";
 import Avatar from "./Avatar";
 import { GET_VOTES_BY_POST_ID } from "@/graphql/queries";
 import { ADD_VOTE } from "@/graphql/mutations";
-import { Jelly } from "@uiball/loaders";
 
 interface PostProps {
     post: Post;
