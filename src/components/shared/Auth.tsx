@@ -3,7 +3,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { signIn } from "next-auth/react";
 
 function Auth({ children }: { children: any }) {
     const { data: session, status } = useSession();
@@ -11,7 +10,6 @@ function Auth({ children }: { children: any }) {
 
     useEffect(() => {
         if (!session) {
-            signIn();
             toast.error("You need to login first", {
                 toastId: "auth",
             });
