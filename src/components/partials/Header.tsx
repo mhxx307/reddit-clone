@@ -13,13 +13,14 @@ import { Spin as Hamburger } from "hamburger-react";
 import { useState } from "react";
 import { useSession, signOut, signIn } from "next-auth/react";
 import Link from "next/link";
+import { DropdownMenu } from "../shared";
 
 function Header() {
     const [isOpen, setOpen] = useState(false);
     const { data: session } = useSession();
 
     return (
-        <div className="sticky top-0 z-50 flex items-center bg-white px-4 py-2 shadow-sm">
+        <div className="sticky top-0 z-50 flex items-center bg-white px-4 py-2 shadow-sm justify-between">
             <div className="relative h-10 w-20 flex-shrink-0 cursor-pointer">
                 <Link href="/">
                     <Image
@@ -40,7 +41,7 @@ function Header() {
             </div>
 
             {/* Search box */}
-            <form className="flex flex-1 items-center space-x-2 border border-gray-200 bg-gray-100 px-3 py-1">
+            <form className="hidden xl:flex flex-1 items-center space-x-2 border border-gray-200 bg-gray-100 px-3 py-1">
                 <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
                 <input type="text" placeholder="Search Reddit" className="flex-1 bg-transparent outline-none" />
                 <button type="submit" hidden />
@@ -60,7 +61,8 @@ function Header() {
             </div>
 
             <div className="lg:hidden ml-5 flex items-center">
-                <Hamburger toggled={isOpen} toggle={setOpen} size={20} />
+                {/* <Hamburger toggled={isOpen} toggle={setOpen} size={20} /> */}
+                <DropdownMenu />
             </div>
 
             {session ? (

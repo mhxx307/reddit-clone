@@ -8,3 +8,4 @@ export { default as ConversationList } from "./ConversationList";
 export { default as Auth } from "./Auth";
 export { default as StartConversationDialog } from "./StartConversationDialog";
 export { default as Head } from "./Head";
+export { default as DropdownMenu } from "./DropdownMenu";

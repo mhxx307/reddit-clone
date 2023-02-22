@@ -61,7 +61,7 @@ function ChatDetail() {
 
     return (
         <div className="flex flex-col justify-between h-full">
-            <div className="space-y-4">
+            <div className="space-y-4 overflow-y-auto">
                 {data?.getMessagesBetweenSenderAndRecipient.map((message: any) => (
                     <div key={message.id} className="flex">
                         <span

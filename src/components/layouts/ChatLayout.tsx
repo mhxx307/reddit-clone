@@ -22,7 +22,7 @@ function ChatLayout({ children }: { children: any }) {
                 <Header />
                 <div className="grid grid-cols-10 bg-white p-3 h-[calc(100%-4.2rem)]">
                     {/* sidebar */}
-                    <div className="col-span-2 space-y-4">
+                    <div className="col-span-10 md:col-span-2 space-y-4">
                         {/* header */}
                         <div className="flex justify-between items-center">
                             <Avatar image={session?.user?.image as string} />
@@ -60,7 +60,7 @@ function ChatLayout({ children }: { children: any }) {
                     </div>
 
                     {/* content */}
-                    <div className="col-span-8">
+                    <div className="col-span-10 md:col-span-8">
                         <StartConversationDialog closeModal={closeModal} isOpen={isOpen} />
                         {children}
                     </div>
